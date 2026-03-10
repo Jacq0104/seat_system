@@ -12,7 +12,10 @@ public class SeatingChart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer floorSeatSeq;
 
+    @Column(name = "floor_no")
     private Integer floorNo;
 
+    @Column(name = "seat_no")
     private Integer seatNo;
+
 }

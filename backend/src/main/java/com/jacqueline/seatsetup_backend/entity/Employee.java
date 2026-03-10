@@ -1,9 +1,6 @@
 package com.jacqueline.seatsetup_backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data // 自動生成 getter, setter
@@ -12,11 +9,17 @@ import lombok.Data;
 public class Employee {
 
     @Id
-    private String emp_id;
+    @Column(name = "emp_id")
+    private String empId;
 
     private String name;
 
     private String email;
 
-    private Integer floor_seat_seq;
+    @Column(name = "floor_seat_seq", insertable = false, updatable = false)
+    private Integer floorSeatSeq;
+
+    @OneToOne
+    @JoinColumn(name = "floor_seat_seq")
+    private SeatingChart seatingChart;
 }
