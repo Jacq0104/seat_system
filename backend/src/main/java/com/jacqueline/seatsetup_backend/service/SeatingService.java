@@ -1,12 +1,13 @@
 package com.jacqueline.seatsetup_backend.service;
 
-import com.jacqueline.seatsetup_backend.entity.Employee;
-import com.jacqueline.seatsetup_backend.entity.SeatingChart;
+import com.jacqueline.seatsetup_backend.dto.EmployeeDto;
+import com.jacqueline.seatsetup_backend.dto.SeatDto;
 import com.jacqueline.seatsetup_backend.repository.EmployeeRepository;
 import com.jacqueline.seatsetup_backend.repository.SeatingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SeatingService {
@@ -19,11 +20,22 @@ public class SeatingService {
         this.employeeRepository = employeeRepository;
     }
 
-    public List<SeatingChart> getSeats() {
-        return seatingRepository.findAll();
+    public List<SeatDto> getSeats() {
+        return seatingRepository.getSeatMap();
     }
 
-    public List<Employee> getEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getUnassignedEmployees() {
+        return employeeRepository.findByFloorSeatSeqIsNull()
+                .stream()
+                .map(e -> new EmployeeDto(e.getEmpId(), e.getName()))
+                .collect(Collectors.toList());
+    }
+
+    public void clearEmpSeat(String empId) {
+        employeeRepository.clearEmployeeSeat(empId);
+    }
+
+    public void assignSeat(String empId, Integer floorSeatSeq) {
+        employeeRepository.assignSeat(empId, floorSeatSeq);
     }
 }
