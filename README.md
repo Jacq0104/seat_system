@@ -2,7 +2,7 @@
 
 ## 前端
 ### 啟動
-npm install
+npm install  
 npm run dev
 
 ### 前端執行網址
@@ -13,5 +13,5 @@ http://localhost:8081/
 CREATE DATABASE seat_system;
 
 ### 建立資料表以及預設資料
-DB/ddl.sql
+DB/ddl.sql  
 DB/dml.sql
