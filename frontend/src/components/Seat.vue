@@ -61,27 +61,35 @@ export default {
         async deleteSeat(empId) {
             try {
                 await SeatService.deleteSeat(empId);
-                this.getSeatingChart();
+                await this.getSeatingChart();
+                await this.getEmployees(); // 被清空位置的重新加回選單
             } catch (error) {
                 console.error('Error deleting seat:', error);
             }
-            
         },
         async selectSeat(seat) {
-            if (seat.empId) {
-                if (confirm('確定要清空座位嗎？')) {
-                    await this.deleteSeat(seat.empId);
-                    alert(`已清空 ${seat.floorNo}樓：座位${seat.seatNo} 的員工 ${seat.empId}`);
-                    await this.getEmployees(); // 被清空位置的重新加回選單
+            if (this.selectedEmployee) {
+                if (!seat.empId) {
+                    this.selectedSeat = seat.floorSeatSeq;
+                } else {
+                    if (confirm(`座位已被占用，確定要清空該座位嗎？`)) {
+                        await this.deleteSeat(seat.empId);
+                        this.selectedSeat = seat.floorSeatSeq;
+                    } else {
+                        this.autoSelectFirstSeat();
+                        return;
+                    }
                 }
-                return;
+            } else {
+                if (!seat.empId) {
+                    alert('請先選擇員工');
+                    return;
+                } else {
+                    if (confirm(`座位已被占用，確定要清空該座位嗎？`)) {
+                        await this.deleteSeat(seat.empId);
+                    }
+                }
             }
-            if (!this.selectedEmployee) {
-                alert('請先選擇員工');
-                return;
-            }
-            this.selectedSeat = seat.floorSeatSeq;
-            console.log(this.selectedSeat);
         },
         async assignSeat() {
             if (!this.selectedEmployee) {
@@ -104,13 +112,17 @@ export default {
         },
         autoSelectFirstSeat() {
             if (this.seatMap.length > 0) {
-                const sorted = [...this.seatMap].filter(seat => !seat.empId).sort((a, b) => a.floor_seat_seq - b.floor_seat_seq);
-                this.selectedSeat = sorted[0].floorSeatSeq;
+                const sorted = [...this.seatMap].filter(seat => !seat.empId).sort((a, b) => a.floorSeatSeq - b.floorSeatSeq);
+                if (sorted.length > 0) {
+                    this.selectedSeat = sorted[0].floorSeatSeq;
+                } else {
+                    this.selectedSeat = 0;
+                } 
             }
         }
     },
     async created() {
-        await Promise.all([this.getEmployees(), this.getSeatingChart()])
+        await Promise.all([this.getEmployees(), this.getSeatingChart()]);
     }
 }
 
