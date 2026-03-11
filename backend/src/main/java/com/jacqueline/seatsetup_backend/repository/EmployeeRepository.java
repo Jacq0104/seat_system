@@ -5,6 +5,7 @@ import com.jacqueline.seatsetup_backend.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +16,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     List<Employee> findByFloorSeatSeqIsNull();
 
-//    可以用 transaction 包起來
-    @Modifying
-    @Transactional
-    @Query("UPDATE Employee e SET e.floorSeatSeq = null WHERE e.empId = :empId")
-    void clearEmployeeSeat(@Param("empId") String empId);
+    @Procedure(procedureName = "clear_employee_seat")
+    void clearEmployeeSeat(@Param("p_emp_id") String empId);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Employee e SET e.floorSeatSeq = :floorSeatSeq WHERE e.empId = :empId")
-    void assignSeat(String empId, Integer floorSeatSeq);
+    @Procedure(procedureName = "assign_seat")
+    void assignSeat(@Param("p_emp_id") String empId, @Param("p_floor_seat_seq") Integer floorSeatSeq);
 }

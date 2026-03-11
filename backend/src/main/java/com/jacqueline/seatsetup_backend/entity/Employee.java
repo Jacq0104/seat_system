@@ -6,6 +6,23 @@ import lombok.Data;
 @Data // 自動生成 getter, setter
 @Entity
 @Table(name = "employee")
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery(
+                name = "clear_employee_seat",
+                procedureName = "clear_employee_seat",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_emp_id", type = String.class)
+                }
+        ),
+        @NamedStoredProcedureQuery(
+                name = "assign_seat",
+                procedureName = "assign_seat",
+                parameters = {
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_emp_id", type = String.class),
+                        @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_floor_seat_seq", type = Integer.class)
+                }
+        )
+})
 public class Employee {
 
     @Id
