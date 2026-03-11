@@ -12,6 +12,7 @@ http://localhost:8081/
 ### 建立資料庫
 CREATE DATABASE seat_system;
 
-### 建立資料表以及預設資料
-DB/ddl.sql  
-DB/dml.sql
+### 資料庫設定(請依序執行以下sql檔)
+1. backend/src/main/resources/db/ddl.sql  
+2. backend/src/main/resources/db/dml.sql
+3. backend/src/main/resources/db/procedures.sql
